@@ -4,16 +4,24 @@ import 'package:meals/screens/meal_details.dart';
 import 'package:meals/widgets/meal_item.dart';
 
 final class MealsScreen extends StatelessWidget {
-  const MealsScreen({super.key, this.title, required this.meals});
+  const MealsScreen(
+      {super.key,
+      this.title,
+      required this.meals,
+      required this.onToggleFavorite});
 
   final String? title;
   final List<Meal> meals;
+  final void Function(Meal meal) onToggleFavorite;
 
   void _selectMeal(BuildContext context, Meal meal) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (ctx) => MealDetailsScreen(meal: meal),
+        builder: (ctx) => MealDetailsScreen(
+          meal: meal,
+          onToggleFavorite: onToggleFavorite,
+        ),
       ),
     );
   }
@@ -21,9 +29,10 @@ final class MealsScreen extends StatelessWidget {
   Widget _content(BuildContext context) {
     Widget content = ListView.builder(
       itemCount: meals.length,
-      itemBuilder: (ctx, index) => MealItem(meal: meals[index], onSelectMeal: () => {
-        _selectMeal(context, meals[index])
-      },),
+      itemBuilder: (ctx, index) => MealItem(
+        meal: meals[index],
+        onSelectMeal: () => {_selectMeal(context, meals[index])},
+      ),
     );
 
     if (meals.isEmpty) {
@@ -56,7 +65,6 @@ final class MealsScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-
     if (title == null) {
       return _content(context);
     }
