@@ -1,9 +1,15 @@
 import 'package:flutter/material.dart';
 
 final class FilterItem extends StatefulWidget {
-  const FilterItem(
-      {super.key, required this.titleText, required this.subtitleText, required this.onFilterChanged });
-  
+  const FilterItem({
+    super.key,
+    required this.initialValue,
+    required this.titleText,
+    required this.subtitleText,
+    required this.onFilterChanged,
+  });
+
+  final bool initialValue;
   final String titleText;
   final String subtitleText;
   final Function(bool) onFilterChanged;
@@ -15,8 +21,13 @@ final class FilterItem extends StatefulWidget {
 }
 
 final class _FilterItemState extends State<FilterItem> {
- 
   var _isFilterSet = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _isFilterSet = widget.initialValue;
+  }
 
   @override
   Widget build(BuildContext context) {

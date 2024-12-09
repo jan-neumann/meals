@@ -3,9 +3,17 @@ import 'package:meals/widgets/filter_item.dart';
 // import 'package:meals/screens/tabs.dart';
 // import 'package:meals/widgets/main_drawer.dart';
 
-final class FiltersScreen extends StatefulWidget {
-  const FiltersScreen({super.key});
+enum Filter {
+  glutenFree,
+  lactoseFree,
+  vegetarian,
+  vegan,
+}
 
+final class FiltersScreen extends StatefulWidget {
+  const FiltersScreen({super.key, required this.currentFilters });
+
+  final Map<Filter, bool> currentFilters;
   @override
   State<FiltersScreen> createState() {
     return _FiltersScreenState();
@@ -14,10 +22,21 @@ final class FiltersScreen extends StatefulWidget {
 
 final class _FiltersScreenState extends State<FiltersScreen> {
 
+  @override
+  void initState() {
+    _glutenFreeFilterSet = widget.currentFilters[Filter.glutenFree]!;
+    _lactoseFreeFilterSet = widget.currentFilters[Filter.lactoseFree]!;
+    _vegetarianFilterSet = widget.currentFilters[Filter.vegetarian]!;
+    _veganFilterSet = widget.currentFilters[Filter.vegan]!;
+    print(widget.currentFilters[Filter.glutenFree]);
+    super.initState();
+  }
+
   var _glutenFreeFilterSet = false;
   var _lactoseFreeFilterSet = false;
   var _vegetarianFilterSet = false;
   var _veganFilterSet = false;
+
 
   @override
   Widget build(BuildContext context) {
@@ -36,29 +55,58 @@ final class _FiltersScreenState extends State<FiltersScreen> {
       //   }
       // }),
       body: PopScope(
+        canPop: false,
+        onPopInvokedWithResult: (didPop, result) {
+          if (didPop) return;
+          Navigator.of(context).pop({
+            Filter.glutenFree: _glutenFreeFilterSet,
+            Filter.lactoseFree: _lactoseFreeFilterSet,
+            Filter.vegetarian: _vegetarianFilterSet,
+            Filter.vegan: _veganFilterSet
+          });
+        },
         child: Column(
           children: [
-           FilterItem(titleText: 'Gluten-free', subtitleText:'Only include gluten-free meals.', onFilterChanged: (isChecked) {
-            setState(() {
-                _glutenFreeFilterSet = isChecked;
-            });
-           },),
-           FilterItem(titleText: 'Lactose-free', subtitleText:'Only include lactose-free meals.', onFilterChanged: (isChecked) {
-            setState(() {
-                _lactoseFreeFilterSet = isChecked;
-            });
-           },),
-           FilterItem(titleText: 'Vegetarian', subtitleText:'Only include vegetarian meals.', onFilterChanged: (isChecked) {
-            setState(() {
-               _vegetarianFilterSet = isChecked;
-            });
-           
-           },),
-           FilterItem(titleText: 'Vegan', subtitleText:'Only include vegan meals.', onFilterChanged: (isChecked) {
-            setState(() {
+            FilterItem(
+              initialValue: _glutenFreeFilterSet,
+              titleText: 'Gluten-free',
+              subtitleText: 'Only include gluten-free meals.',
+              onFilterChanged: (isChecked) {
+                setState(() {
+                  _glutenFreeFilterSet = isChecked;
+                });
+              },
+            ),
+            FilterItem(
+              initialValue: _lactoseFreeFilterSet,
+              titleText: 'Lactose-free',
+              subtitleText: 'Only include lactose-free meals.',
+              onFilterChanged: (isChecked) {
+                setState(() {
+                  _lactoseFreeFilterSet = isChecked;
+                });
+              },
+            ),
+            FilterItem(
+              initialValue: _vegetarianFilterSet,
+              titleText: 'Vegetarian',
+              subtitleText: 'Only include vegetarian meals.',
+              onFilterChanged: (isChecked) {
+                setState(() {
+                  _vegetarianFilterSet = isChecked;
+                });
+              },
+            ),
+            FilterItem(
+              initialValue: _veganFilterSet,
+              titleText: 'Vegan',
+              subtitleText: 'Only include vegan meals.',
+              onFilterChanged: (isChecked) {
+                setState(() {
                   _veganFilterSet = isChecked;
-            });
-           },),
+                });
+              },
+            ),
           ],
         ),
       ),
